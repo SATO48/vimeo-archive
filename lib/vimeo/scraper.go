@@ -15,33 +15,33 @@ type Scraper struct {
 	total       int
 }
 
-type OptionFunc func(*Scraper)
+type ScraperOptionFunc func(*Scraper)
 
-func WithAPI(api *vimeo.Client) OptionFunc {
+func WithAPI(api *vimeo.Client) ScraperOptionFunc {
 	return func(vs *Scraper) {
 		vs.api = api
 	}
 }
 
-func WithPageSize(size int) OptionFunc {
+func WithPageSize(size int) ScraperOptionFunc {
 	return func(vs *Scraper) {
 		vs.pageSize = size
 	}
 }
 
-func WithMaxPages(pages int) OptionFunc {
+func WithMaxPages(pages int) ScraperOptionFunc {
 	return func(vs *Scraper) {
 		vs.maxPages = pages
 	}
 }
 
-func WithPagePointer(pointer int) OptionFunc {
+func WithPagePointer(pointer int) ScraperOptionFunc {
 	return func(vs *Scraper) {
 		vs.pagePointer = pointer
 	}
 }
 
-func NewScraper(options ...OptionFunc) *Scraper {
+func NewScraper(options ...ScraperOptionFunc) *Scraper {
 	vs := &Scraper{}
 	vs.pageSize = 25
 

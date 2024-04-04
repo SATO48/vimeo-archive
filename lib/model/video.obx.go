@@ -24,22 +24,23 @@ var VideoBinding = video_EntityInfo{
 
 // Video_ contains type-based Property helpers to facilitate some common operations such as Queries.
 var Video_ = struct {
-	Id            *objectbox.PropertyUint64
-	URI           *objectbox.PropertyString
-	Name          *objectbox.PropertyString
-	Description   *objectbox.PropertyString
-	Link          *objectbox.PropertyString
-	Duration      *objectbox.PropertyInt
-	Width         *objectbox.PropertyInt
-	Height        *objectbox.PropertyInt
-	Language      *objectbox.PropertyString
-	CreatedTime   *objectbox.PropertyInt64
-	ModifiedTime  *objectbox.PropertyInt64
-	ReleaseTime   *objectbox.PropertyInt64
-	ContentRating *objectbox.PropertyStringVector
-	License       *objectbox.PropertyString
-	Status        *objectbox.PropertyString
-	ResourceKey   *objectbox.PropertyString
+	Id             *objectbox.PropertyUint64
+	URI            *objectbox.PropertyString
+	Name           *objectbox.PropertyString
+	Description    *objectbox.PropertyString
+	Link           *objectbox.PropertyString
+	Duration       *objectbox.PropertyInt
+	Width          *objectbox.PropertyInt
+	Height         *objectbox.PropertyInt
+	Language       *objectbox.PropertyString
+	CreatedTime    *objectbox.PropertyInt64
+	ModifiedTime   *objectbox.PropertyInt64
+	ReleaseTime    *objectbox.PropertyInt64
+	ContentRating  *objectbox.PropertyStringVector
+	License        *objectbox.PropertyString
+	Status         *objectbox.PropertyString
+	ResourceKey    *objectbox.PropertyString
+	DownloadedTime *objectbox.PropertyInt64
 }{
 	Id: &objectbox.PropertyUint64{
 		BaseProperty: &objectbox.BaseProperty{
@@ -137,6 +138,12 @@ var Video_ = struct {
 			Entity: &VideoBinding.Entity,
 		},
 	},
+	DownloadedTime: &objectbox.PropertyInt64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     17,
+			Entity: &VideoBinding.Entity,
+		},
+	},
 }
 
 // GeneratorVersion is called by ObjectBox to verify the compatibility of the generator used to generate this code
@@ -164,7 +171,8 @@ func (video_EntityInfo) AddToModel(model *objectbox.Model) {
 	model.Property("License", 9, 14, 7947889135096176120)
 	model.Property("Status", 9, 15, 3972839812277639879)
 	model.Property("ResourceKey", 9, 16, 6249089389157426821)
-	model.EntityLastPropertyId(16, 6249089389157426821)
+	model.Property("DownloadedTime", 10, 17, 3157268172957756694)
+	model.EntityLastPropertyId(17, 3157268172957756694)
 }
 
 // GetId is called by ObjectBox during Put operations to check for existing ID on an object
@@ -213,6 +221,15 @@ func (video_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id
 		}
 	}
 
+	var propDownloadedTime int64
+	{
+		var err error
+		propDownloadedTime, err = objectbox.TimeInt64ConvertToDatabaseValue(obj.DownloadedTime)
+		if err != nil {
+			return errors.New("converter objectbox.TimeInt64ConvertToDatabaseValue() failed on Video.DownloadedTime: " + err.Error())
+		}
+	}
+
 	var offsetURI = fbutils.CreateStringOffset(fbb, obj.URI)
 	var offsetName = fbutils.CreateStringOffset(fbb, obj.Name)
 	var offsetDescription = fbutils.CreateStringOffset(fbb, obj.Description)
@@ -224,7 +241,7 @@ func (video_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id
 	var offsetResourceKey = fbutils.CreateStringOffset(fbb, obj.ResourceKey)
 
 	// build the FlatBuffers object
-	fbb.StartObject(16)
+	fbb.StartObject(17)
 	fbutils.SetUint64Slot(fbb, 0, id)
 	fbutils.SetUOffsetTSlot(fbb, 1, offsetURI)
 	fbutils.SetUOffsetTSlot(fbb, 2, offsetName)
@@ -241,6 +258,7 @@ func (video_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id
 	fbutils.SetUOffsetTSlot(fbb, 13, offsetLicense)
 	fbutils.SetUOffsetTSlot(fbb, 14, offsetStatus)
 	fbutils.SetUOffsetTSlot(fbb, 15, offsetResourceKey)
+	fbutils.SetInt64Slot(fbb, 16, propDownloadedTime)
 	return nil
 }
 
@@ -272,23 +290,29 @@ func (video_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{}
 		return nil, errors.New("converter objectbox.TimeInt64ConvertToEntityProperty() failed on Video.ReleaseTime: " + err.Error())
 	}
 
+	propDownloadedTime, err := objectbox.TimeInt64ConvertToEntityProperty(fbutils.GetInt64Slot(table, 36))
+	if err != nil {
+		return nil, errors.New("converter objectbox.TimeInt64ConvertToEntityProperty() failed on Video.DownloadedTime: " + err.Error())
+	}
+
 	return &Video{
-		Id:            propId,
-		URI:           fbutils.GetStringSlot(table, 6),
-		Name:          fbutils.GetStringSlot(table, 8),
-		Description:   fbutils.GetStringSlot(table, 10),
-		Link:          fbutils.GetStringSlot(table, 12),
-		Duration:      fbutils.GetIntSlot(table, 14),
-		Width:         fbutils.GetIntSlot(table, 16),
-		Height:        fbutils.GetIntSlot(table, 18),
-		Language:      fbutils.GetStringSlot(table, 20),
-		CreatedTime:   propCreatedTime,
-		ModifiedTime:  propModifiedTime,
-		ReleaseTime:   propReleaseTime,
-		ContentRating: fbutils.GetStringVectorSlot(table, 28),
-		License:       fbutils.GetStringSlot(table, 30),
-		Status:        fbutils.GetStringSlot(table, 32),
-		ResourceKey:   fbutils.GetStringSlot(table, 34),
+		Id:             propId,
+		URI:            fbutils.GetStringSlot(table, 6),
+		Name:           fbutils.GetStringSlot(table, 8),
+		Description:    fbutils.GetStringSlot(table, 10),
+		Link:           fbutils.GetStringSlot(table, 12),
+		Duration:       fbutils.GetIntSlot(table, 14),
+		Width:          fbutils.GetIntSlot(table, 16),
+		Height:         fbutils.GetIntSlot(table, 18),
+		Language:       fbutils.GetStringSlot(table, 20),
+		CreatedTime:    propCreatedTime,
+		ModifiedTime:   propModifiedTime,
+		ReleaseTime:    propReleaseTime,
+		ContentRating:  fbutils.GetStringVectorSlot(table, 28),
+		License:        fbutils.GetStringSlot(table, 30),
+		Status:         fbutils.GetStringSlot(table, 32),
+		ResourceKey:    fbutils.GetStringSlot(table, 34),
+		DownloadedTime: propDownloadedTime,
 	}, nil
 }
 

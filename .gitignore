@@ -2,3 +2,5 @@
 objectbox
 tmp
 .pre-commit-config.yaml
+result
+bak

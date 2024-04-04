@@ -3,6 +3,7 @@ module vimeo-archive
 go 1.21.5
 
 require (
+	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/defval/di v1.12.0
 	github.com/google/flatbuffers v1.12.0
 	github.com/objectbox/objectbox-go v1.8.0

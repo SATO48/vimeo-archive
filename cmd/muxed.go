@@ -1,7 +1,7 @@
-package main
+package cmd
 
-func isArchived(id int) bool {
-	for _, aid := range archived {
+func isMuxed(id uint64) bool {
+	for _, aid := range muxed {
 		if aid == id {
 			return true
 		}
@@ -10,7 +10,7 @@ func isArchived(id int) bool {
 	return false
 }
 
-var archived = []int{
+var muxed = []uint64{
 	512157091, 512161327, 512161260, 512161606, 512155619, 512155884, 512161295,
 	512161277, 512161244, 512161344, 512161429, 512161520, 512161586, 512161508,
 	512157563, 512156350, 512161452, 512156977, 512161309, 512161535, 512156497,

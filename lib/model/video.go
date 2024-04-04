@@ -11,21 +11,22 @@ import (
 type Video struct {
 	Id uint64 `objectbox:"id(assignable)"`
 
-	URI           string    `json:"uri,omitempty"`
-	Name          string    `json:"name,omitempty"`
-	Description   string    `json:"description,omitempty"`
-	Link          string    `json:"link,omitempty"`
-	Duration      int       `json:"duration,omitempty"`
-	Width         int       `json:"width,omitempty"`
-	Height        int       `json:"height,omitempty"`
-	Language      string    `json:"language,omitempty"`
-	CreatedTime   time.Time `json:"created_time,omitempty"`
-	ModifiedTime  time.Time `json:"modified_time,omitempty"`
-	ReleaseTime   time.Time `json:"release_time,omitempty"`
-	ContentRating []string  `json:"content_rating,omitempty"`
-	License       string    `json:"license,omitempty"`
-	Status        string    `json:"status,omitempty"`
-	ResourceKey   string    `json:"resource_key,omitempty"`
+	URI            string    `json:"uri,omitempty"`
+	Name           string    `json:"name,omitempty"`
+	Description    string    `json:"description,omitempty"`
+	Link           string    `json:"link,omitempty"`
+	Duration       int       `json:"duration,omitempty"`
+	Width          int       `json:"width,omitempty"`
+	Height         int       `json:"height,omitempty"`
+	Language       string    `json:"language,omitempty"`
+	CreatedTime    time.Time `json:"created_time,omitempty"`
+	ModifiedTime   time.Time `json:"modified_time,omitempty"`
+	ReleaseTime    time.Time `json:"release_time,omitempty"`
+	ContentRating  []string  `json:"content_rating,omitempty"`
+	License        string    `json:"license,omitempty"`
+	Status         string    `json:"status,omitempty"`
+	ResourceKey    string    `json:"resource_key,omitempty"`
+	DownloadedTime time.Time `json:"downloaded_time,omitempty"`
 }
 
 func VideoFromVimeo(v *vimeo.Video) *Video {
