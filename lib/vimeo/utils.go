@@ -2,7 +2,7 @@ package vimeo
 
 import (
 	"github.com/samber/lo"
-	"github.com/silentsokolov/go-vimeo/vimeo"
+	"github.com/silentsokolov/go-vimeo/v2/vimeo"
 )
 
 func FindBestFile(files []*vimeo.File) *vimeo.File {

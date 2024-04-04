@@ -1,0 +1,180 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:7213647096405042608",
+      "lastPropertyId": "12:5924064810708718015",
+      "name": "File",
+      "properties": [
+        {
+          "id": "1:6109961741584807097",
+          "name": "Id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5423207651351721255",
+          "name": "Video",
+          "indexId": "1:5328155144571166569",
+          "type": 11,
+          "flags": 520,
+          "relationTarget": "Video"
+        },
+        {
+          "id": "3:33301726147589279",
+          "name": "Quality",
+          "type": 9
+        },
+        {
+          "id": "4:3912510695361366141",
+          "name": "Type",
+          "type": 9
+        },
+        {
+          "id": "5:9103487774975810663",
+          "name": "Width",
+          "type": 6
+        },
+        {
+          "id": "6:558039885322707643",
+          "name": "Height",
+          "type": 6
+        },
+        {
+          "id": "7:138939902729106351",
+          "name": "Link",
+          "type": 9
+        },
+        {
+          "id": "8:5946832145443102685",
+          "name": "CreatedTime",
+          "type": 10
+        },
+        {
+          "id": "9:7501548141467613274",
+          "name": "FPS",
+          "type": 7
+        },
+        {
+          "id": "10:3039054294949786231",
+          "name": "Size",
+          "type": 6
+        },
+        {
+          "id": "11:7180297607562117409",
+          "name": "MD5",
+          "type": 9
+        },
+        {
+          "id": "12:5924064810708718015",
+          "name": "FileID",
+          "indexId": "3:3653660175223000838",
+          "type": 9,
+          "flags": 2080
+        }
+      ]
+    },
+    {
+      "id": "2:6741263801960274516",
+      "lastPropertyId": "16:6249089389157426821",
+      "name": "Video",
+      "properties": [
+        {
+          "id": "1:6323469236078112026",
+          "name": "Id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:3649540426967182990",
+          "name": "URI",
+          "type": 9
+        },
+        {
+          "id": "3:4552994611722894134",
+          "name": "Name",
+          "type": 9
+        },
+        {
+          "id": "4:7062959419176054987",
+          "name": "Description",
+          "type": 9
+        },
+        {
+          "id": "5:4949827082400195581",
+          "name": "Link",
+          "type": 9
+        },
+        {
+          "id": "6:6844308024960516445",
+          "name": "Duration",
+          "type": 6
+        },
+        {
+          "id": "7:1132828243380067529",
+          "name": "Width",
+          "type": 6
+        },
+        {
+          "id": "8:4974726543127236057",
+          "name": "Height",
+          "type": 6
+        },
+        {
+          "id": "9:1455235265760818980",
+          "name": "Language",
+          "type": 9
+        },
+        {
+          "id": "10:6632970615661739428",
+          "name": "CreatedTime",
+          "type": 10
+        },
+        {
+          "id": "11:8625031358772357008",
+          "name": "ModifiedTime",
+          "type": 10
+        },
+        {
+          "id": "12:4002229490783755786",
+          "name": "ReleaseTime",
+          "type": 10
+        },
+        {
+          "id": "13:3212428807753209092",
+          "name": "ContentRating",
+          "type": 30
+        },
+        {
+          "id": "14:7947889135096176120",
+          "name": "License",
+          "type": 9
+        },
+        {
+          "id": "15:3972839812277639879",
+          "name": "Status",
+          "type": 9
+        },
+        {
+          "id": "16:6249089389157426821",
+          "name": "ResourceKey",
+          "type": 9
+        }
+      ]
+    }
+  ],
+  "lastEntityId": "2:6741263801960274516",
+  "lastIndexId": "3:3653660175223000838",
+  "lastRelationId": "",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [
+    5606456894652390066
+  ],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

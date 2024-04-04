@@ -1,1 +1,4 @@
 .devenv
+objectbox
+tmp
+.pre-commit-config.yaml

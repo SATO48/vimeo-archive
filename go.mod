@@ -3,8 +3,12 @@ module vimeo-archive
 go 1.21.5
 
 require (
+	github.com/defval/di v1.12.0
+	github.com/google/flatbuffers v1.12.0
+	github.com/objectbox/objectbox-go v1.8.0
 	github.com/samber/lo v1.39.0
-	github.com/silentsokolov/go-vimeo v2.2.2+incompatible
+	github.com/silentsokolov/go-vimeo/v2 v2.2.4-0.20240404053824-996199965509
+	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
 	golang.org/x/oauth2 v0.18.0
 )
@@ -12,12 +16,11 @@ require (
 require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/google/flatbuffers v1.12.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/objectbox/objectbox-generator v0.13.0 // indirect
-	github.com/objectbox/objectbox-go v1.8.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect

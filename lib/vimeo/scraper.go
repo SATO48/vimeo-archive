@@ -1,13 +1,10 @@
 package vimeo
 
 import (
-	"context"
 	"errors"
 	"log/slog"
 
-	"github.com/silentsokolov/go-vimeo/vimeo"
-	"github.com/spf13/viper"
-	"golang.org/x/oauth2"
+	"github.com/silentsokolov/go-vimeo/v2/vimeo"
 )
 
 type Scraper struct {
@@ -15,10 +12,16 @@ type Scraper struct {
 	pageSize    int
 	maxPages    int
 	pagePointer int
-	totalPages  int
+	total       int
 }
 
 type OptionFunc func(*Scraper)
+
+func WithAPI(api *vimeo.Client) OptionFunc {
+	return func(vs *Scraper) {
+		vs.api = api
+	}
+}
 
 func WithPageSize(size int) OptionFunc {
 	return func(vs *Scraper) {
@@ -46,23 +49,19 @@ func NewScraper(options ...OptionFunc) *Scraper {
 		opt(vs)
 	}
 
-	vs.api = vimeo.NewClient(oauth2.NewClient(context.Background(), oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: viper.GetString("VIMEO_ACCESS_KEY")},
-	)), nil)
-
 	return vs
 }
 
 func (vs *Scraper) HasNextPage() bool {
-	if vs.pagePointer == 0 {
+	if vs.total == 0 {
 		return true
 	}
 
-	if vs.pagePointer >= vs.maxPages {
+	if vs.maxPages > 0 && vs.pagePointer >= vs.maxPages {
 		return false
 	}
 
-	if vs.pagePointer >= vs.totalPages {
+	if vs.pagePointer >= vs.total/vs.pageSize+1 {
 		return false
 	}
 
@@ -71,9 +70,14 @@ func (vs *Scraper) HasNextPage() bool {
 
 func (vs *Scraper) ListVideos() ([]*vimeo.Video, error) {
 	vs.pagePointer++
-	slog.Info("listing videos from vimeo", "page", vs.pagePointer, "total", vs.totalPages)
+	slog.Info("listing videos from vimeo", "page", vs.pagePointer, "total", vs.total)
 
-	videos, r, err := vs.api.Users.ListVideo("", vimeo.OptPerPage(vs.pageSize), vimeo.OptPage(vs.pagePointer))
+	videos, r, err := vs.api.Users.ListVideo("",
+		vimeo.OptPerPage(vs.pageSize),
+		vimeo.OptPage(vs.pagePointer),
+		vimeo.OptSort("date"),
+		vimeo.OptDirection("desc"),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +85,7 @@ func (vs *Scraper) ListVideos() ([]*vimeo.Video, error) {
 		return nil, errors.New("response is nil")
 	}
 
-	vs.totalPages = r.TotalPages
+	vs.total = r.Total
 
 	return videos, nil
 }

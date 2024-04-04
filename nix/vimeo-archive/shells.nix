@@ -13,9 +13,16 @@ in
 
         packages = with pkgs; [
           air
+          doppler
           gomod2nix
           cells.objectbox.apps.default
         ];
+
+        scripts.dev.exec = "doppler run -- go run -ldflags \"-r=${cells.objectbox.apps.default}/lib\" .";
+
+        processes.ob-admin.exec = ''
+          docker run --rm -v $PWD/objectbox:/db -u $(id -u):$(id -g) --publish 8081:8081 objectboxio/admin
+        '';
 
         pre-commit.hooks = {
           gomod2nix = {
