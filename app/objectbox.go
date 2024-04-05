@@ -1,7 +1,7 @@
 package app
 
 import (
-	"vimeo-archive/lib/model"
+	"github.com/sato48/vimeo-archive/lib/model"
 
 	"github.com/defval/di"
 	"github.com/objectbox/objectbox-go/objectbox"

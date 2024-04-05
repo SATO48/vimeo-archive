@@ -3,8 +3,9 @@ package main
 import (
 	"log/slog"
 	"os"
-	"vimeo-archive/app"
-	"vimeo-archive/cmd"
+
+	"github.com/sato48/vimeo-archive/app"
+	"github.com/sato48/vimeo-archive/cmd"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

@@ -1,4 +1,4 @@
-module vimeo-archive
+module github.com/sato48/vimeo-archive
 
 go 1.21.5
 

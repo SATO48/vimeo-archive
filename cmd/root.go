@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"log/slog"
-	"vimeo-archive/app"
-	"vimeo-archive/lib/model"
-	libvimeo "vimeo-archive/lib/vimeo"
+
+	"github.com/sato48/vimeo-archive/app"
+	"github.com/sato48/vimeo-archive/lib/model"
+	libvimeo "github.com/sato48/vimeo-archive/lib/vimeo"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/defval/di"
