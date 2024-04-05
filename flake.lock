@@ -118,11 +118,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1694529238,
-        "narHash": "sha256-zsNZZGTGnMOf9YpHKJqMSsa0dXbfmxeoJ7xHlrt+xmY=",
+        "lastModified": 1710146030,
+        "narHash": "sha256-SZ5L6eA7HJ/nmkzGG7/ISclqe6oZdOZTNoesiInkXPQ=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "ff7b65b44d01cf9ba6a71320833626af21126384",
+        "rev": "b1d9ab70662946ef0850d488da1c9019f3a9752a",
         "type": "github"
       },
       "original": {
@@ -161,15 +161,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1710154385,
-        "narHash": "sha256-4c3zQ2YY4BZOufaBJB4v9VBBeN2dH7iVdoJw8SDNCfI=",
-        "owner": "nix-community",
+        "lastModified": 1698758712,
+        "narHash": "sha256-aHdDJ/2R4mk4BeJ03W4OV94Op8PVYvfjSyQucl0W9DQ=",
+        "owner": "niklashhh",
         "repo": "gomod2nix",
-        "rev": "872b63ddd28f318489c929d25f1f0a3c6039c971",
+        "rev": "00c8e2fad3c0b3b86b0669d40e69f97d3ad1cdfb",
         "type": "github"
       },
       "original": {
-        "owner": "nix-community",
+        "owner": "niklashhh",
+        "ref": "fix-recursive-symlinker",
         "repo": "gomod2nix",
         "type": "github"
       }

@@ -2,6 +2,7 @@
 let
   inherit (inputs) devenv n2c cells;
   pkgs = cell.pkgs.default;
+  objectbox = cells.objectbox.apps.objectbox;
 in
 {
   default = devenv.lib.mkShell {
@@ -15,10 +16,10 @@ in
           air
           doppler
           gomod2nix
-          cells.objectbox.apps.default
+          objectbox
         ];
 
-        scripts.vimeo-archiver.exec = "doppler run -- go run -ldflags \"-r=${cells.objectbox.apps.default}/lib\" . $@";
+        scripts.vimeo-archiver.exec = "doppler run -- go run -ldflags \"-r=${objectbox}/lib\" . $@";
 
         processes.ob-admin.exec = ''
           docker run --rm -v $PWD/objectbox:/db -u $(id -u):$(id -g) --publish 8081:8081 objectboxio/admin

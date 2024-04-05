@@ -5,6 +5,7 @@ let
 
   # This is a common idiom for combining lib with builtins.
   l = nixpkgs.lib // builtins;
+  objectbox = cells.objectbox.apps.objectbox;
 in
 {
   default = with cell.pkgs.default; buildGoApplication rec {
@@ -16,11 +17,11 @@ in
     doCheck = false;
 
     ldflags = [
-      "-r=${cells.objectbox.apps.default}/lib"
+      "-r=${objectbox}/lib"
     ];
 
     buildInputs = [
-      cells.objectbox.apps.default
+      objectbox
     ];
   };
 }
