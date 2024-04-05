@@ -21,8 +21,8 @@ func init() {
 func main() {
 	App, err := app.Boot(
 		app.BootstrapFunc(app.S3),
+		app.BootstrapFunc(app.Gorm),
 		app.BootstrapFunc(app.Vimeo),
-		app.BootstrapFunc(app.Objectbox),
 		app.BootstrapFunc(cmd.Bootstrap),
 	)
 	if err != nil {

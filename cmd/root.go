@@ -3,16 +3,16 @@ package cmd
 import (
 	"log/slog"
 
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/defval/di"
 	"github.com/sato48/vimeo-archive/app"
 	"github.com/sato48/vimeo-archive/lib/model"
 	libvimeo "github.com/sato48/vimeo-archive/lib/vimeo"
-
-	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/defval/di"
 	"github.com/silentsokolov/go-vimeo/v2/vimeo"
-
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func Bootstrap(c *app.AppContainer) error {
@@ -22,14 +22,12 @@ func Bootstrap(c *app.AppContainer) error {
 		RunE: c.RunE(func(
 			s3 *s3.Client,
 			vc *vimeo.Client,
-			vb *model.VideoBox,
-			fb *model.FileBox,
+			db *gorm.DB,
 		) error {
 			va := libvimeo.NewArchiver(
+				libvimeo.WithDB(db),
 				libvimeo.WithS3Client(s3),
 				libvimeo.WithVimeoClient(vc),
-				libvimeo.WithVideoBox(vb),
-				libvimeo.WithFileBox(fb),
 				libvimeo.WithMax(viper.GetUint64("max")),
 			)
 
@@ -43,7 +41,10 @@ func Bootstrap(c *app.AppContainer) error {
 	scrapeCmd := &cobra.Command{
 		Use:   "scrape",
 		Short: "Scrape Vimeo videos into the Objectbox Database",
-		RunE: c.RunE(func(vc *vimeo.Client, vb *model.VideoBox) error {
+		RunE: c.RunE(func(
+			vc *vimeo.Client,
+			db *gorm.DB,
+		) error {
 			vs := libvimeo.NewScraper(
 				libvimeo.WithAPI(vc),
 				libvimeo.WithPageSize(viper.GetInt("page-size")),
@@ -62,8 +63,10 @@ func Bootstrap(c *app.AppContainer) error {
 
 				for _, v := range videos {
 					video := model.VideoFromVimeo(v)
-					_, err := vb.Put(video)
-					if err != nil {
+					if err := db.Clauses(clause.OnConflict{
+						UpdateAll: true,
+					}).
+						Create(&video).Error; err != nil {
 						slog.Error("unable to put video", "error", err)
 						return err
 					}
@@ -84,25 +87,21 @@ func Bootstrap(c *app.AppContainer) error {
 	statsCmd := &cobra.Command{
 		Use:   "stats",
 		Short: "Show statistics of the Vimeo videos",
-		RunE: c.RunE(func(vb *model.VideoBox) error {
-			total, err := vb.Count()
-			if err != nil {
+		RunE: c.RunE(func(db *gorm.DB) error {
+			var total int64
+			if err := db.Model(&model.Video{}).Count(&total).Error; err != nil {
 				slog.Error("unable to count videos", "error", err)
 				return err
 			}
 
-			nonMuxed, err := vb.Query(
-				model.Video_.Id.NotIn(muxed...),
-			).Count()
-			if err != nil {
+			var nonMuxed int64
+			if err := db.Model(&model.Video{}).Where("id NOT IN (?)", muxed).Count(&nonMuxed).Error; err != nil {
 				slog.Error("unable to count non-muxed videos", "error", err)
 				return err
 			}
 
-			downloaded, err := vb.Query(
-				model.Video_.DownloadedTime.IsNotNil(),
-			).Count()
-			if err != nil {
+			var downloaded int64
+			if err := db.Model(&model.Video{}).Where("downloaded_time IS NOT NULL").Count(&downloaded).Error; err != nil {
 				slog.Error("unable to count downloaded videos", "error", err)
 				return err
 			}

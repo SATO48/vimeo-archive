@@ -76,7 +76,7 @@ func (vs *Scraper) ListVideos() ([]*vimeo.Video, error) {
 		vimeo.OptPerPage(vs.pageSize),
 		vimeo.OptPage(vs.pagePointer),
 		vimeo.OptSort("date"),
-		vimeo.OptDirection("desc"),
+		vimeo.OptDirection("asc"),
 	)
 	if err != nil {
 		return nil, err

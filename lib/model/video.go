@@ -1,37 +1,40 @@
 package model
 
-//go:generate go run github.com/objectbox/objectbox-go/cmd/objectbox-gogen
-
 import (
+	"strings"
 	"time"
 
 	"github.com/silentsokolov/go-vimeo/v2/vimeo"
+	"gorm.io/gorm"
 )
 
 type Video struct {
-	Id uint64 `objectbox:"id(assignable)"`
+	gorm.Model
+	Files []File
 
-	URI            string    `json:"uri,omitempty"`
-	Name           string    `json:"name,omitempty"`
-	Description    string    `json:"description,omitempty"`
-	Link           string    `json:"link,omitempty"`
-	Duration       int       `json:"duration,omitempty"`
-	Width          int       `json:"width,omitempty"`
-	Height         int       `json:"height,omitempty"`
-	Language       string    `json:"language,omitempty"`
-	CreatedTime    time.Time `json:"created_time,omitempty"`
-	ModifiedTime   time.Time `json:"modified_time,omitempty"`
-	ReleaseTime    time.Time `json:"release_time,omitempty"`
-	ContentRating  []string  `json:"content_rating,omitempty"`
-	License        string    `json:"license,omitempty"`
-	Status         string    `json:"status,omitempty"`
-	ResourceKey    string    `json:"resource_key,omitempty"`
-	DownloadedTime time.Time `json:"downloaded_time,omitempty"`
+	URI            string
+	Name           string
+	Description    string
+	Link           string
+	Duration       int
+	Width          int
+	Height         int
+	Language       string
+	CreatedTime    time.Time
+	ModifiedTime   time.Time
+	ReleaseTime    time.Time
+	ContentRating  string
+	License        string
+	Status         string
+	ResourceKey    string
+	DownloadedTime *time.Time
 }
 
 func VideoFromVimeo(v *vimeo.Video) *Video {
 	return &Video{
-		Id:            uint64(v.GetID()),
+		Model: gorm.Model{
+			ID: uint(v.GetID()),
+		},
 		URI:           v.URI,
 		Name:          v.Name,
 		Description:   v.Description,
@@ -43,7 +46,7 @@ func VideoFromVimeo(v *vimeo.Video) *Video {
 		CreatedTime:   v.CreatedTime,
 		ModifiedTime:  v.ModifiedTime,
 		ReleaseTime:   v.ReleaseTime,
-		ContentRating: v.ContentRating,
+		ContentRating: strings.Join(v.ContentRating, ","),
 		License:       v.License,
 		Status:        v.Status,
 		ResourceKey:   v.ResourceKey,

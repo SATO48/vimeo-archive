@@ -1,6 +1,5 @@
 .devenv
-objectbox
-tmp
+.direnv
 .pre-commit-config.yaml
 result
-bak
+vimeo-archive.db

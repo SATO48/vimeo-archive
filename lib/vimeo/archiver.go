@@ -9,12 +9,12 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/sato48/vimeo-archive/lib/model"
-
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/sato48/vimeo-archive/lib/model"
 	"github.com/silentsokolov/go-vimeo/v2/vimeo"
+	"gorm.io/gorm"
 )
 
 var nonAlphanumericRegex = regexp.MustCompile(`[^a-zA-Z0-9 ]+`)
@@ -23,8 +23,7 @@ type Archiver struct {
 	s3  *s3.Client
 	up  *manager.Uploader
 	vc  *vimeo.Client
-	vb  *model.VideoBox
-	fb  *model.FileBox
+	db  *gorm.DB
 	max uint64
 }
 
@@ -43,15 +42,9 @@ func WithVimeoClient(vc *vimeo.Client) ArchiverOptionFunc {
 	}
 }
 
-func WithVideoBox(vb *model.VideoBox) ArchiverOptionFunc {
+func WithDB(db *gorm.DB) ArchiverOptionFunc {
 	return func(a *Archiver) {
-		a.vb = vb
-	}
-}
-
-func WithFileBox(fb *model.FileBox) ArchiverOptionFunc {
-	return func(a *Archiver) {
-		a.fb = fb
+		a.db = db
 	}
 }
 
@@ -72,10 +65,12 @@ func NewArchiver(options ...ArchiverOptionFunc) *Archiver {
 }
 
 func (a *Archiver) Archive() error {
-	videos, err := a.vb.Query(
-		model.Video_.DownloadedTime.IsNil(),
-	).Limit(a.max).Find()
-	if err != nil {
+	videos := []*model.Video{}
+	if err := a.db.Model(&model.Video{}).
+		Where("downloaded_time IS NULL").
+		Limit(int(a.max)).
+		Find(&videos).
+		Error; err != nil {
 		return err
 	}
 
@@ -86,14 +81,14 @@ func (a *Archiver) Archive() error {
 			return err
 		}
 
-		slog.Info("archived video", "id", video.Id)
+		slog.Info("archived video", "id", video.ID)
 	}
 
 	return nil
 }
 
 func (a *Archiver) archiveVideo(v *model.Video) error {
-	r, _, err := a.vc.Videos.Get(int(v.Id))
+	r, _, err := a.vc.Videos.Get(int(v.ID))
 	if err != nil {
 		return err
 	}
@@ -108,7 +103,7 @@ func (a *Archiver) archiveVideo(v *model.Video) error {
 	defer dl.Body.Close()
 
 	// Upload the file
-	dst := fmt.Sprintf("%d%s", v.Id, path.Ext(dl.Request.URL.Path))
+	dst := fmt.Sprintf("%d%s", v.ID, path.Ext(dl.Request.URL.Path))
 	_, err = a.up.Upload(context.Background(), &s3.PutObjectInput{
 		Bucket:             aws.String("sato48-vimeo"),
 		Key:                aws.String(dst),
@@ -121,17 +116,18 @@ func (a *Archiver) archiveVideo(v *model.Video) error {
 		return err
 	}
 
-	// TODO: Insert File and mark as Downloaded
+	// Insert File and mark as Downloaded
 	fm := model.FileFromVimeo(f)
-	fm.Video = v
-	if _, err = a.fb.Put(fm); err != nil {
+	fm.VideoID = v.ID
+	if err := a.db.Create(&fm).Error; err != nil {
 		slog.Error("unable to put file", "error", err)
 		return err
 	}
 
-	v.DownloadedTime = time.Now()
-	if _, err = a.vb.Put(v); err != nil {
-		slog.Error("unable to put video", "error", err)
+	now := time.Now()
+	v.DownloadedTime = &now
+	if err := a.db.Save(v).Error; err != nil {
+		slog.Error("unable to update video", "error", err)
 		return err
 	}
 

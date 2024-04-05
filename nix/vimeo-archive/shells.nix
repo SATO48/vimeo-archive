@@ -2,7 +2,6 @@
 let
   inherit (inputs) devenv n2c cells;
   pkgs = cell.pkgs.default;
-  objectbox = cells.objectbox.apps.objectbox;
 in
 {
   default = devenv.lib.mkShell {
@@ -13,17 +12,9 @@ in
         languages.go.enable = true;
 
         packages = with pkgs; [
-          air
           doppler
           gomod2nix
-          objectbox
         ];
-
-        scripts.vimeo-archiver.exec = "doppler run -- go run -ldflags \"-r=${objectbox}/lib\" . $@";
-
-        processes.ob-admin.exec = ''
-          docker run --rm -v $PWD/objectbox:/db -u $(id -u):$(id -g) --publish 8081:8081 objectboxio/admin
-        '';
 
         pre-commit.hooks = {
           gomod2nix = {
