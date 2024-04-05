@@ -94,6 +94,11 @@ func (a *Archiver) archiveVideo(v *model.Video) error {
 	}
 	f := FindBestFile(r.Files)
 
+	if f == nil {
+		slog.Warn("no file found for video", "id", v.ID)
+		return nil
+	}
+
 	// Download the file
 	dl, err := http.Get(f.Link)
 	if err != nil {
