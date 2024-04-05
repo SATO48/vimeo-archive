@@ -6,6 +6,7 @@ import (
 	"vimeo-archive/lib/model"
 	libvimeo "vimeo-archive/lib/vimeo"
 
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/defval/di"
 	"github.com/silentsokolov/go-vimeo/v2/vimeo"
 
@@ -17,10 +18,17 @@ func Bootstrap(c *app.AppContainer) error {
 	archiveCmd := &cobra.Command{
 		Use:   "archive",
 		Short: "Archive Vimeo videos",
-		RunE: c.RunE(func(vc *vimeo.Client, vb *model.VideoBox) error {
+		RunE: c.RunE(func(
+			s3 *s3.Client,
+			vc *vimeo.Client,
+			vb *model.VideoBox,
+			fb *model.FileBox,
+		) error {
 			va := libvimeo.NewArchiver(
+				libvimeo.WithS3Client(s3),
 				libvimeo.WithVimeoClient(vc),
 				libvimeo.WithVideoBox(vb),
+				libvimeo.WithFileBox(fb),
 				libvimeo.WithMax(viper.GetUint64("max")),
 			)
 
